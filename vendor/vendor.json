@@ -63,6 +63,12 @@
 			"revisionTime": "2017-05-19T13:19:18Z"
 		},
 		{
+			"checksumSHA1": "Or7JBEOYS7o4DXXOenIO17iNQWs=",
+			"path": "github.com/btcsuite/btcutil/base58",
+			"revision": "5ffa719c3882fd2ec1e8b9f4978066701c31a343",
+			"revisionTime": "2017-06-12T00:02:13Z"
+		},
+		{
 			"checksumSHA1": "2UmMbNHc8FBr98mJFN1k8ISOIHk=",
 			"path": "github.com/garyburd/redigo/internal",
 			"revision": "95d11dba2d44531bdb8022752b98912baafae03a",
@@ -73,6 +79,36 @@
 			"path": "github.com/garyburd/redigo/redis",
 			"revision": "95d11dba2d44531bdb8022752b98912baafae03a",
 			"revisionTime": "2017-05-31T16:47:38Z"
+		},
+		{
+			"checksumSHA1": "MlEHIE/60sB86Lmf0MPTIXHzKzE=",
+			"path": "golang.org/x/crypto/curve25519",
+			"revision": "4bc1c249b153ce1da9f55437759cec51fe6acabb",
+			"revisionTime": "2017-07-15T21:28:07Z"
+		},
+		{
+			"checksumSHA1": "LIOlUuwAjG4+meTovizhtsB+fTE=",
+			"path": "golang.org/x/crypto/nacl/box",
+			"revision": "4bc1c249b153ce1da9f55437759cec51fe6acabb",
+			"revisionTime": "2017-07-15T21:28:07Z"
+		},
+		{
+			"checksumSHA1": "Y/FcWB2/xSfX1rRp7HYhktHNw8s=",
+			"path": "golang.org/x/crypto/nacl/secretbox",
+			"revision": "4bc1c249b153ce1da9f55437759cec51fe6acabb",
+			"revisionTime": "2017-07-15T21:28:07Z"
+		},
+		{
+			"checksumSHA1": "kVKE0OX1Xdw5mG7XKT86DLLKE2I=",
+			"path": "golang.org/x/crypto/poly1305",
+			"revision": "4bc1c249b153ce1da9f55437759cec51fe6acabb",
+			"revisionTime": "2017-07-15T21:28:07Z"
+		},
+		{
+			"checksumSHA1": "RUr1Owi1/hTpuAqKeeus6YuEyz8=",
+			"path": "golang.org/x/crypto/salsa20/salsa",
+			"revision": "4bc1c249b153ce1da9f55437759cec51fe6acabb",
+			"revisionTime": "2017-07-15T21:28:07Z"
 		}
 	],
 	"rootPath": "uniswitch-agent"
