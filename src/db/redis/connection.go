@@ -3,6 +3,7 @@ package redis
 import (
 	"github.com/astaxie/beego"
 	"github.com/garyburd/redigo/redis"
+
 	"time"
 )
 

@@ -1,9 +1,11 @@
 package main
 
 import (
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 
-	"github.com/astaxie/beego"
+	"os"
+	"uniswitch-agent/src/core/task"
 	_ "uniswitch-agent/src/web/api/routers"
 	"uniswitch-agent/src/web/req"
 )
@@ -14,15 +16,39 @@ var (
 )
 
 func main() {
-	//start process data
-	logInit()
-	logs.Info("register agent")
-	url := "" + uniSwitchHost + registerUrl
-	registerParam := "" //todo get agent param
-	req.RegisterAgentToSwitch(url, registerParam)
+	cmd := os.Args[0]
+	logs.Info("operaction : %s\n", cmd)
+	//cmd: register start stop
+	if cmd == "register" {
+		register()
+	} else if cmd == "start" {
+		start()
+	} else if cmd == "stop" {
+		stop()
+	}
+}
 
+func register() {
+	logs.Info("register agent")
+	//TODO pwd
+	url := "" + uniSwitchHost + registerUrl
+
+	//TODO get agent param
+	registerParam := ""
+	req.RegisterAgentToSwitch(url, registerParam)
+}
+
+func start() {
+	logInit()
+	//TODO update login status
+
+	go task.DequeueTask()
 	logs.Info("beego start run")
 	beego.Run()
+}
+
+func stop() {
+
 }
 
 func logInit() {
