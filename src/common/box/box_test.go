@@ -10,19 +10,20 @@ import (
 )
 
 func Test_myBox(t *testing.T) {
-	pub1, pri1, err := GenerateKeyPair()
-	fmt.Println(pub1, pri1, err)
+	// alice wanna send msg to bob
+	alicePub, alicePri, err := GenerateKeyPair()
+	fmt.Println(alicePub, alicePri, err)
 
-	pub2, pri2, err := GenerateKeyPair()
-	fmt.Println(pub2, pri2, err)
+	bobPub, bobPri, err := GenerateKeyPair()
+	fmt.Println(bobPub, bobPri, err)
 
 	msg := "f*ck it again"
 	fmt.Println(msg)
 
-	cipher := Seal(msg, pub2, pri1)
+	cipher := Seal(msg, bobPub, alicePri)
 	fmt.Println(cipher)
 
-	plain, ok := Open(cipher, pub1, pri2)
+	plain, ok := Open(cipher, alicePub, bobPri)
 	fmt.Println(plain, ok)
 }
 
