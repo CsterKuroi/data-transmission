@@ -9,8 +9,10 @@ import (
 	"golang.org/x/crypto/nacl/box"
 )
 
+// asymmetric encryption
+// alice wanna send msg to bob
+// encrypt the msg with (bobPub,alicePri) and decrypt cipher with (alicePub,bobPri)
 func Test_myBox(t *testing.T) {
-	// alice wanna send msg to bob
 	alicePub, alicePri, err := GenerateKeyPair()
 	fmt.Println(alicePub, alicePri, err)
 

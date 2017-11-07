@@ -11,6 +11,8 @@ import (
 	"golang.org/x/crypto/nacl/secretbox"
 )
 
+// symmetric encryption
+// encrypt the msg with a key and decrypt cipher with the same key
 func Test_mySecretbox(t *testing.T) {
 	key := GenerateSecretKey()
 	fmt.Println(key)
