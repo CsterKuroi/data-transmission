@@ -30,5 +30,7 @@ func DequeueTask() {
 
 		//TODO success update
 
+		//TODO failed update
+
 	}
 }

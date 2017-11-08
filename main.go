@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"uniswitch-agent/src/core/task"
@@ -14,35 +15,69 @@ import (
 var (
 	uniSwitchHost = beego.AppConfig.String("uniswitch.host")
 	registerUrl   = beego.AppConfig.String("registerUrl")
+	checkPwdUrl   = beego.AppConfig.String("checkPwdUrl")
 )
 
 func main() {
-	cmd := os.Args[0]
-	logs.Info("operation : %s\n", cmd)
-	//cmd: register start stop
-	if cmd == "register" {
-		register()
-	} else if cmd == "start" {
-		start()
-	} else if cmd == "stop" {
-		stop()
+	if len(os.Args) == 1 {
+		fmt.Println("cmd:\n" +
+			"  register : register to uniswitch\n" +
+			"  start    : start uniswitch-agent\n" +
+			"  stop     : stop uniswitch-agent\n" +
+			"\n")
+	} else {
+		cmd := os.Args[1]
+		if cmd == "register" {
+			register()
+		} else if cmd == "start" {
+			start()
+		} else if cmd == "stop" {
+			stop()
+		} else {
+			fmt.Println("Agent only support these commands : register | start | stop. Please try again!")
+		}
 	}
 }
 
 func register() {
-	logs.Info("register agent")
-	//TODO pwd
-	url := "" + uniSwitchHost + registerUrl
+	logs.Info("Register Agent")
 
-	//TODO get agent param
-	registerParam := ""
-	req.RegisterAgentToSwitch(url, registerParam)
+	var pwdF, pwdS string
+	fmt.Print("Please input your password : ")
+	fmt.Scanln(&pwdF)
+	fmt.Print("Please input your password again : ")
+	fmt.Scanln(&pwdS)
+	if len(pwdF) < 6 {
+		fmt.Println("Password must contain at least 6 characters!")
+	} else if pwdF != pwdS {
+		fmt.Println("Passwords do not match!")
+	} else {
+		url := uniSwitchHost + registerUrl
+		//TODO get agent param
+		registerParam := ""
+		res, err := req.RegisterAgentToSwitch(url, registerParam)
+		//TODO deal with result
+		logs.Info("res:", res)
+		logs.Info("err:", err)
+		fmt.Println("Register success! Please wait for the activation.")
+	}
 }
 
 func start() {
 	logInit()
-	//TODO update login status
+	var pwdF string
+	fmt.Print("Please input your password : ")
+	fmt.Scanln(&pwdF)
+	//TODO check pwd
+	hashPwd := pwdF
+	url := uniSwitchHost + checkPwdUrl
+	_, err := req.CheckAgentPwdInSwitch(url, hashPwd)
+	if err != nil {
+		fmt.Println("Check password failed. Please try again!")
+	} else {
+		//TODO update login status by res
 
+	}
 	go task.DequeueTask()
 	logs.Info("beego start run")
 	beego.Run()
