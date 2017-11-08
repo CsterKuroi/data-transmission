@@ -18,6 +18,6 @@ func (m *MainController) Hello() {
 
 func (m *MainController) SendDataToAnotherAgent() {
 	param := m.Ctx.Input.RequestBody
-	logs.Info("Recive data send task :", param)
+	logs.Info("Receive data send task :", param)
 	task.EnqueueTask(param)
 }
