@@ -8,9 +8,26 @@ import (
 	"uniswitch-agent/src/common/secretbox"
 )
 
-// en: secretKey,sessionPub,[tempPir],msg
-// de: encryptedSecretKey,sessionPri,[tempPub],cipher
+// seal: msg, secretKey, sessionPub, ----> cipher, encryptedSecretKey, tempPub
+// open: cipher, encryptedSecretKey, tempPub, sessionPri ----> plain, ok
 func Test_myEnvelope(t *testing.T) {
+	secretKey := secretbox.GenerateSecretKey()
+	fmt.Println(secretKey)
+
+	sessionPub, sessionPri, err := box.GenerateKeyPair()
+	fmt.Println(sessionPub, sessionPri, err)
+
+	msg := "f*ck envelope seal and open ?"
+	fmt.Println(msg)
+
+	cipher, encryptedSecretKey, tempPub := Seal(msg, secretKey, sessionPub)
+	fmt.Println(cipher, encryptedSecretKey, tempPub)
+
+	plain, ok := Open(cipher, encryptedSecretKey, tempPub, sessionPri)
+	fmt.Println(plain, ok)
+}
+
+func Test_envelope(t *testing.T) {
 	secretKey := secretbox.GenerateSecretKey()
 	fmt.Println(secretKey)
 
