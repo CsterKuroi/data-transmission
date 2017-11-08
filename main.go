@@ -1,13 +1,14 @@
 package main
 
 import (
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
-
 	"os"
+
 	"uniswitch-agent/src/core/task"
 	_ "uniswitch-agent/src/web/api/routers"
 	"uniswitch-agent/src/web/req"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 var (

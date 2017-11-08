@@ -3,7 +3,6 @@ package secretbox
 import (
 	"crypto/rand"
 	"encoding/hex"
-
 	"fmt"
 	"io"
 	"testing"

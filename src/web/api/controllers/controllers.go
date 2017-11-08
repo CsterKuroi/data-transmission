@@ -1,9 +1,10 @@
 package controllers
 
 import (
+	"uniswitch-agent/src/core/task"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
-	"uniswitch-agent/src/core/task"
 )
 
 type MainController struct {

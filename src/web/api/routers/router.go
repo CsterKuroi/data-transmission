@@ -1,9 +1,9 @@
 package routers
 
 import (
-	"github.com/astaxie/beego"
-
 	"uniswitch-agent/src/web/api/controllers"
+
+	"github.com/astaxie/beego"
 )
 
 func init() {

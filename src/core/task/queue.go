@@ -1,11 +1,11 @@
 package task
 
 import (
-	"github.com/astaxie/beego/logs"
+	"time"
 
 	"uniswitch-agent/src/db/redis"
 
-	"time"
+	"github.com/astaxie/beego/logs"
 )
 
 func EnqueueTask(taskStr []byte) {

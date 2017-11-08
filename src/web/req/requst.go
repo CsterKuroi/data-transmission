@@ -2,6 +2,7 @@ package req
 
 import (
 	"fmt"
+
 	"github.com/astaxie/beego/httplib"
 	"github.com/astaxie/beego/logs"
 )
