@@ -17,7 +17,7 @@ var (
 
 func main() {
 	cmd := os.Args[0]
-	logs.Info("operaction : %s\n", cmd)
+	logs.Info("operation : %s\n", cmd)
 	//cmd: register start stop
 	if cmd == "register" {
 		register()
