@@ -100,7 +100,6 @@ func Test_myEnvelopePhoto(t *testing.T) {
 
 	fn := "shan_return.jpg"
 	data := []byte(plain)
-	fmt.Println(os.ModeAppend)
 	ioutil.WriteFile(fn, data, 0664)
 	if err != nil {
 		fmt.Printf("%s\n", err)
