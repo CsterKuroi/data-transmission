@@ -3,7 +3,6 @@ package envelope
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
 	"testing"
 
 	"uniswitch-agent/src/common/box"
