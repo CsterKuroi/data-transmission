@@ -2,6 +2,8 @@ package envelope
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
 	"testing"
 
 	"uniswitch-agent/src/common/box"
@@ -52,3 +54,88 @@ func Test_envelope(t *testing.T) {
 	plain, ok := secretbox.Open(decryptedSecretKey, cipher)
 	fmt.Println(plain, ok)
 }
+
+func Test_myEnvelopeText(t *testing.T) {
+	secretKey := secretbox.GenerateSecretKey()
+	fmt.Println(secretKey)
+
+	sessionPub, sessionPri, err := box.GenerateKeyPair()
+	fmt.Println(sessionPub, sessionPri, err)
+
+	f, err := ioutil.ReadFile("envelope.go")
+	if err != nil {
+		fmt.Printf("%s\n", err)
+		panic(err)
+	}
+	msg := string(f)
+	fmt.Println(msg)
+
+	cipher, encryptedSecretKey, tempPub := Seal(msg, secretKey, sessionPub)
+	fmt.Println(cipher, encryptedSecretKey, tempPub)
+
+	plain, ok := Open(cipher, encryptedSecretKey, tempPub, sessionPri)
+	fmt.Println(plain, ok)
+}
+
+func Test_myEnvelopePhoto(t *testing.T) {
+	secretKey := secretbox.GenerateSecretKey()
+	fmt.Println(secretKey)
+
+	sessionPub, sessionPri, err := box.GenerateKeyPair()
+	fmt.Println(sessionPub, sessionPri, err)
+
+	f, err := ioutil.ReadFile("shan.jpg")
+	if err != nil {
+		fmt.Printf("%s\n", err)
+		panic(err)
+	}
+	msg := string(f)
+	fmt.Println(msg)
+
+	cipher, encryptedSecretKey, tempPub := Seal(msg, secretKey, sessionPub)
+	fmt.Println(cipher, encryptedSecretKey, tempPub)
+
+	plain, ok := Open(cipher, encryptedSecretKey, tempPub, sessionPri)
+	fmt.Println(plain, ok)
+
+	fn := "shan_return.jpg"
+	data := []byte(plain)
+	fmt.Println(os.ModeAppend)
+	ioutil.WriteFile(fn, data, 0664)
+	if err != nil {
+		fmt.Printf("%s\n", err)
+		panic(err)
+	}
+}
+
+// too big
+//func Test_myEnvelopeVideo(t *testing.T) {
+//	secretKey := secretbox.GenerateSecretKey()
+//	fmt.Println(secretKey)
+//
+//	sessionPub, sessionPri, err := box.GenerateKeyPair()
+//	fmt.Println(sessionPub, sessionPri, err)
+//
+//	f, err := ioutil.ReadFile("second.mp4")
+//	if err != nil {
+//		fmt.Printf("%s\n", err)
+//		panic(err)
+//	}
+//	msg := string(f)
+//	fmt.Println("msg")
+//
+//	cipher, encryptedSecretKey, tempPub := Seal(msg, secretKey, sessionPub)
+//	fmt.Println(cipher, encryptedSecretKey, tempPub)
+//
+//	plain, _ := Open(cipher, encryptedSecretKey, tempPub, sessionPri)
+//	//fmt.Println(plain, ok)
+//
+//	fn := "second_return.mp4"
+//	data := []byte(plain)
+//	fmt.Println(os.ModeAppend)
+//	ioutil.WriteFile(fn, data, 0664)
+//	if err != nil {
+//		fmt.Printf("%s\n", err)
+//		panic(err)
+//	}
+//}
