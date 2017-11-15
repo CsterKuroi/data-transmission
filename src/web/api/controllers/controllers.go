@@ -37,6 +37,7 @@ func (m *MainController) Public() {
 	plain, ok := box.Open(result["public"], result["temp"], agentPri)
 	logs.Info("public open box", plain, ok)
 	redis.Store(result["oid"], "public", plain)
+	//TODO submit
 }
 
 func (m *MainController) Private() {
@@ -46,6 +47,7 @@ func (m *MainController) Private() {
 	plain, ok := box.Open(result["private"], result["temp"], agentPri)
 	logs.Info("private open box", plain, ok)
 	redis.Store(result["oid"], "private", plain)
+	//TODO submit
 }
 
 func (m *MainController) Secret() {
@@ -55,6 +57,7 @@ func (m *MainController) Secret() {
 	plain, ok := box.Open(result["secret"], result["temp"], agentPri)
 	logs.Info("secret open box", plain, ok)
 	redis.Store(result["oid"], "secret", plain)
+	//TODO submit
 }
 
 func sendData(oid, public, secret, address, data string) {
@@ -81,6 +84,7 @@ func sendData(oid, public, secret, address, data string) {
 	fmt.Println("response Headers:", resp.Header)
 	body, _ := ioutil.ReadAll(resp.Body)
 	fmt.Println("response Body:", string(body))
+	//TODO submit
 }
 
 func (m *MainController) Address() {
@@ -103,6 +107,7 @@ func (m *MainController) Address() {
 	logs.Info("redis get secret", secret, err)
 	data := "A staff member in costume waits for visitors at a booth for Chinese Twitter-like Sina Weibo at the Global Mobile Internet Conference in Beijing, April 27, 2017."
 	go sendData(result["oid"], public, secret, plain, data)
+	//TODO submit
 }
 
 func (m *MainController) Data() {
@@ -119,6 +124,7 @@ func (m *MainController) Data() {
 	//data, ok := secretbox.Open(secret, result["data"])
 	//logs.Info("data open secretbox", data, ok)
 	redis.Store(result["oid"], "edata", result["data"])
+	//TODO submit
 }
 
 func (m *MainController) DecryptData() {
@@ -138,6 +144,7 @@ func (m *MainController) DecryptData() {
 	data, ok := secretbox.Open(secret, edata)
 	logs.Info("data open secretbox", data, ok)
 	redis.Store(result["oid"], "data", data)
+	//TODO submit
 }
 
 func (m *MainController) DestroyData() {
@@ -148,6 +155,7 @@ func (m *MainController) DestroyData() {
 
 	res, err := redis.Delete(result["oid"])
 	logs.Info("redis delete key", res, err)
+	//TODO submit
 }
 
 func (m *MainController) SendDataToAnotherAgent() {
