@@ -13,22 +13,24 @@ import (
 )
 
 var (
-	oid                = secretbox.GenerateSecretKey()
-	public, private, _ = box.GenerateKeyPair()
-	secret             = secretbox.GenerateSecretKey()
-	address            = "localhost:8099"
-	data               = "e_data"
+	oid                 = secretbox.GenerateSecretKey()
+	public, private, _  = box.GenerateKeyPair()
+	tempPub, tempPri, _ = box.GenerateKeyPair()
+	secret              = secretbox.GenerateSecretKey()
+	address             = "http://127.0.0.1:8099/data"
+	data                = "A pedestrian wades through the flooded road in Haikou, South China's Hainan province, Nov 14, 2017."
 )
 
 func TestMainController_Public(t *testing.T) {
 	url := "http://127.0.0.1:8099/public"
 
-	pub := make(map[string]string)
-	pub["public"] = public
-	pub["oid"] = oid
+	result := make(map[string]string)
+	result["oid"] = oid
+	result["temp"] = tempPub
+	result["public"] = box.Seal(public, agentPub, tempPri)
 
-	jsonStr, _ := json.Marshal(pub)
-	fmt.Println("json:", jsonStr)
+	jsonStr, _ := json.Marshal(result)
+	fmt.Println("json:", result)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	if err != nil {
 		panic(err)
@@ -46,12 +48,13 @@ func TestMainController_Public(t *testing.T) {
 func TestMainController_Private(t *testing.T) {
 	url := "http://127.0.0.1:8099/private"
 
-	pri := make(map[string]string)
-	pri["private"] = private
-	pri["oid"] = oid
+	result := make(map[string]string)
+	result["oid"] = oid
+	result["temp"] = tempPub
+	result["private"] = box.Seal(private, agentPub, tempPri)
 
-	jsonStr, _ := json.Marshal(pri)
-	fmt.Println("json:", jsonStr)
+	jsonStr, _ := json.Marshal(result)
+	fmt.Println("json:", result)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	if err != nil {
 		panic(err)
@@ -69,12 +72,13 @@ func TestMainController_Private(t *testing.T) {
 func TestMainController_Secret(t *testing.T) {
 	url := "http://127.0.0.1:8099/secret"
 
-	sec := make(map[string]string)
-	sec["secret"] = secret
-	sec["oid"] = oid
+	result := make(map[string]string)
+	result["oid"] = oid
+	result["temp"] = tempPub
+	result["secret"] = box.Seal(secret, agentPub, tempPri)
 
-	jsonStr, _ := json.Marshal(sec)
-	fmt.Println("json:", jsonStr)
+	jsonStr, _ := json.Marshal(result)
+	fmt.Println("json:", result)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	if err != nil {
 		panic(err)
@@ -92,12 +96,13 @@ func TestMainController_Secret(t *testing.T) {
 func TestMainController_Address(t *testing.T) {
 	url := "http://127.0.0.1:8099/address"
 
-	add := make(map[string]string)
-	add["address"] = address
-	add["oid"] = oid
+	result := make(map[string]string)
+	result["oid"] = oid
+	result["temp"] = tempPub
+	result["address"] = box.Seal(address, agentPub, tempPri)
 
-	jsonStr, _ := json.Marshal(add)
-	fmt.Println("json:", jsonStr)
+	jsonStr, _ := json.Marshal(result)
+	fmt.Println("json:", result)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	if err != nil {
 		panic(err)
@@ -112,15 +117,61 @@ func TestMainController_Address(t *testing.T) {
 	fmt.Println("response Body:", string(body))
 }
 
-func TestMainController_Data(t *testing.T) {
-	url := "http://127.0.0.1:8099/data"
+//func TestMainController_Data(t *testing.T) {
+//	url := "http://127.0.0.1:8099/data"
+//
+//	result := make(map[string]string)
+//	result["oid"] = oid
+//	result["temp"] = tempPub
+//	result["secret"] = box.Seal(secret, public, tempPri)
+//	result["data"] = secretbox.Seal(secret, data)
+//
+//	jsonStr, _ := json.Marshal(result)
+//	fmt.Println("json:", result)
+//	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+//	if err != nil {
+//		panic(err)
+//	}
+//	req.Header.Set("Content-Type", "application/json")
+//	client := &http.Client{}
+//	resp, err := client.Do(req)
+//	defer resp.Body.Close()
+//	fmt.Println("response Status:", resp.Status)
+//	fmt.Println("response Headers:", resp.Header)
+//	body, _ := ioutil.ReadAll(resp.Body)
+//	fmt.Println("response Body:", string(body))
+//}
 
-	da := make(map[string]string)
-	da["data"] = data
-	da["oid"] = oid
+func TestMainController_DecryptData(t *testing.T) {
+	url := "http://127.0.0.1:8099/decrypt"
 
-	jsonStr, _ := json.Marshal(da)
-	fmt.Println("json:", jsonStr)
+	result := make(map[string]string)
+	result["oid"] = oid
+
+	jsonStr, _ := json.Marshal(result)
+	fmt.Println("json:", result)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+	if err != nil {
+		panic(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	defer resp.Body.Close()
+	fmt.Println("response Status:", resp.Status)
+	fmt.Println("response Headers:", resp.Header)
+	body, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println("response Body:", string(body))
+}
+
+func TestMainController_DestroyData(t *testing.T) {
+	url := "http://127.0.0.1:8099/destroy"
+
+	result := make(map[string]string)
+	result["oid"] = oid
+
+	jsonStr, _ := json.Marshal(result)
+	fmt.Println("json:", result)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	if err != nil {
 		panic(err)
@@ -136,8 +187,11 @@ func TestMainController_Data(t *testing.T) {
 }
 
 func Test_var(t *testing.T) {
+	fmt.Println(agentPub, agentPri)
+	fmt.Println()
 	fmt.Println(oid)
 	fmt.Println(public, private)
+	fmt.Println(tempPub, tempPri)
 	fmt.Println(secret)
 	fmt.Println(address)
 	fmt.Println(data)

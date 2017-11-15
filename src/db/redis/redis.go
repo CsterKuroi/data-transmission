@@ -12,6 +12,12 @@ func Get(cid string, field string) (interface{}, error) {
 	return conn.Do("HGET", cid, field)
 }
 
+func Delete(cid string) (interface{}, error) {
+	conn := RedisClient.Get()
+	defer conn.Close()
+	return conn.Do("DEL", cid)
+}
+
 func RpushTask(queueName string, task []byte) (interface{}, error) {
 	conn := RedisClient.Get()
 	defer conn.Close()
