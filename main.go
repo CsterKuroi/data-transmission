@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"uniswitch-agent/src/core/task"
+	//"uniswitch-agent/src/core/task"
 	_ "uniswitch-agent/src/web/api/routers"
 	"uniswitch-agent/src/web/req"
 
@@ -19,6 +19,7 @@ var (
 )
 
 func main() {
+	os.Args = append(os.Args, "start")
 	if len(os.Args) == 1 {
 		fmt.Println("cmd:\n" +
 			"  register : register to uniswitch\n" +
@@ -65,20 +66,20 @@ func register() {
 
 func start() {
 	logInit()
-	var pwdF string
-	fmt.Print("Please input your password : ")
-	fmt.Scanln(&pwdF)
-	//TODO check pwd
-	hashPwd := pwdF
-	url := uniSwitchHost + checkPwdUrl
-	_, err := req.CheckAgentPwdInSwitch(url, hashPwd)
-	if err != nil {
-		fmt.Println("Check password failed. Please try again!")
-	} else {
-		//TODO update login status by res
-
-	}
-	go task.DequeueTask()
+	//var pwdF string
+	//fmt.Print("Please input your password : ")
+	//fmt.Scanln(&pwdF)
+	////TODO check pwd
+	//hashPwd := pwdF
+	//url := uniSwitchHost + checkPwdUrl
+	//_, err := req.CheckAgentPwdInSwitch(url, hashPwd)
+	//if err != nil {
+	//	fmt.Println("Check password failed. Please try again!")
+	//} else {
+	//	//TODO update login status by res
+	//
+	//}
+	//go task.DequeueTask()
 	logs.Info("beego start run")
 	beego.Run()
 }

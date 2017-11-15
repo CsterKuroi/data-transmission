@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 	"github.com/garyburd/redigo/redis"
 )
 
@@ -18,6 +19,7 @@ func init() {
 	// 从配置文件获取redis的ip以及db
 	REDIS_HOST = beego.AppConfig.String("redis.host")
 	REDIS_DB, _ = beego.AppConfig.Int("redis.db")
+	logs.Debug(REDIS_HOST, REDIS_DB)
 	// 建立连接池
 	RedisClient = &redis.Pool{
 		// 从配置文件获取maxidle以及maxactive，取不到则用后面的默认值

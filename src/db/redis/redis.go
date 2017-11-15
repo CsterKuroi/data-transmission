@@ -1,5 +1,17 @@
 package redis
 
+func Store(cid string, field string, value string) (interface{}, error) {
+	conn := RedisClient.Get()
+	defer conn.Close()
+	return conn.Do("HMSET", cid, field, value)
+}
+
+func Get(cid string, field string) (interface{}, error) {
+	conn := RedisClient.Get()
+	defer conn.Close()
+	return conn.Do("HGET", cid, field)
+}
+
 func RpushTask(queueName string, task []byte) (interface{}, error) {
 	conn := RedisClient.Get()
 	defer conn.Close()
