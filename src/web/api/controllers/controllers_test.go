@@ -27,7 +27,7 @@ func TestMainController_Public(t *testing.T) {
 	result := make(map[string]string)
 	result["oid"] = oid
 	result["temp"] = tempPub
-	result["public"] = box.Seal(public, agentPub, tempPri)
+	result["cipher"] = box.Seal(public, agentPub, tempPri)
 
 	jsonStr, _ := json.Marshal(result)
 	fmt.Println("json:", result)
@@ -51,7 +51,7 @@ func TestMainController_Private(t *testing.T) {
 	result := make(map[string]string)
 	result["oid"] = oid
 	result["temp"] = tempPub
-	result["private"] = box.Seal(private, agentPub, tempPri)
+	result["cipher"] = box.Seal(private, agentPub, tempPri)
 
 	jsonStr, _ := json.Marshal(result)
 	fmt.Println("json:", result)
@@ -75,7 +75,7 @@ func TestMainController_Secret(t *testing.T) {
 	result := make(map[string]string)
 	result["oid"] = oid
 	result["temp"] = tempPub
-	result["secret"] = box.Seal(secret, agentPub, tempPri)
+	result["cipher"] = box.Seal(secret, agentPub, tempPri)
 
 	jsonStr, _ := json.Marshal(result)
 	fmt.Println("json:", result)
@@ -99,7 +99,7 @@ func TestMainController_Address(t *testing.T) {
 	result := make(map[string]string)
 	result["oid"] = oid
 	result["temp"] = tempPub
-	result["address"] = box.Seal(address, agentPub, tempPri)
+	result["cipher"] = box.Seal(address, agentPub, tempPri)
 
 	jsonStr, _ := json.Marshal(result)
 	fmt.Println("json:", result)

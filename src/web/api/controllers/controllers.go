@@ -34,7 +34,7 @@ func (m *MainController) Public() {
 	var result map[string]string
 	json.Unmarshal(m.Ctx.Input.RequestBody, &result)
 	logs.Info("Api receive public", result)
-	plain, ok := box.Open(result["public"], result["temp"], agentPri)
+	plain, ok := box.Open(result["cipher"], result["temp"], agentPri)
 	logs.Info("public open box", plain, ok)
 	redis.Store(result["oid"], "public", plain)
 	//TODO submit
@@ -44,7 +44,7 @@ func (m *MainController) Private() {
 	var result map[string]string
 	json.Unmarshal(m.Ctx.Input.RequestBody, &result)
 	logs.Info("Api receive private", result)
-	plain, ok := box.Open(result["private"], result["temp"], agentPri)
+	plain, ok := box.Open(result["cipher"], result["temp"], agentPri)
 	logs.Info("private open box", plain, ok)
 	redis.Store(result["oid"], "private", plain)
 	//TODO submit
@@ -54,7 +54,7 @@ func (m *MainController) Secret() {
 	var result map[string]string
 	json.Unmarshal(m.Ctx.Input.RequestBody, &result)
 	logs.Info("Api receive secret", result)
-	plain, ok := box.Open(result["secret"], result["temp"], agentPri)
+	plain, ok := box.Open(result["cipher"], result["temp"], agentPri)
 	logs.Info("secret open box", plain, ok)
 	redis.Store(result["oid"], "secret", plain)
 	//TODO submit
@@ -93,7 +93,7 @@ func (m *MainController) Address() {
 	time.Sleep(time.Second)
 
 	logs.Info("Api receive address", result)
-	plain, ok := box.Open(result["address"], result["temp"], agentPri)
+	plain, ok := box.Open(result["cipher"], result["temp"], agentPri)
 	logs.Info("address open box", plain, ok)
 	redis.Store(result["oid"], "address", plain)
 
