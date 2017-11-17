@@ -33,8 +33,10 @@ func main() {
 		if cmd == "init" {
 			initKeys()
 		} else if cmd == "register" {
+			config.FileToConfig()
 			register()
 		} else if cmd == "start" {
+			config.FileToConfig()
 			start()
 		} else if cmd == "stop" {
 			stop()

@@ -10,6 +10,8 @@ import (
 
 	"uniswitch-agent/src/common/box"
 	"uniswitch-agent/src/common/secretbox"
+	"uniswitch-agent/src/common/sign"
+	"uniswitch-agent/src/config"
 	"uniswitch-agent/src/core/task"
 	"uniswitch-agent/src/db/redis"
 
@@ -18,7 +20,8 @@ import (
 )
 
 var (
-	agentPub, agentPri = "BFhZXZmUWqd5B7YdF9xshvHuJkskcUvnx5zTXsB22Mrk", "AzsqoRz1p47uVMWdtaqc6xNniK9z149YLg6jT1ScHhr9"
+	agentPub, agentPri = config.Config.Encrypt.PublicKey, config.Config.Encrypt.PrivateKey
+	signPub, signPri   = config.Config.Sign.PublicKey, config.Config.Sign.PrivateKey
 )
 
 type MainController struct {
@@ -28,6 +31,16 @@ type MainController struct {
 func (m *MainController) Hello() {
 	m.Ctx.WriteString("Hello,")
 	m.Ctx.ResponseWriter.Write([]byte(" Welcome to Uni-Switch Agent!"))
+}
+
+func (m *MainController) Sign() {
+	var result map[string]string
+	json.Unmarshal(m.Ctx.Input.RequestBody, &result)
+	logs.Info("Api receive msg", result)
+	sig := sign.Sign(signPri,result["msg"])
+	logs.Info("sig ", sig)
+	//logs.Info("sig v ", sign.Verify(signPub,result["msg"],sig))
+	m.Ctx.WriteString(sig)
 }
 
 func (m *MainController) Public() {
