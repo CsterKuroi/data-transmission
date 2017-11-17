@@ -81,6 +81,11 @@
 			"revisionTime": "2017-05-31T16:47:38Z"
 		},
 		{
+			"checksumSHA1": "WMTjT/WhwABW0CP22n1KeXxb96w=",
+			"path": "github.com/google/uuid",
+			"revision": ""
+		},
+		{
 			"checksumSHA1": "MlEHIE/60sB86Lmf0MPTIXHzKzE=",
 			"path": "golang.org/x/crypto/curve25519",
 			"revision": "4bc1c249b153ce1da9f55437759cec51fe6acabb",

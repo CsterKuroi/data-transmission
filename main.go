@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"uniswitch-agent/src/config"
 	//"uniswitch-agent/src/core/task"
 	_ "uniswitch-agent/src/web/api/routers"
 	"uniswitch-agent/src/web/req"
@@ -22,22 +23,29 @@ func main() {
 	os.Args = append(os.Args, "start")
 	if len(os.Args) == 1 {
 		fmt.Println("cmd:\n" +
+			"  init     : init sign and encrypt\n" +
 			"  register : register to uniswitch\n" +
 			"  start    : start uniswitch-agent\n" +
-			"  stop     : stop uniswitch-agent\n" +
+			"  stop     : stop uniswitch-agent \n" +
 			"\n")
 	} else {
 		cmd := os.Args[1]
-		if cmd == "register" {
+		if cmd == "init" {
+			initKeys()
+		} else if cmd == "register" {
 			register()
 		} else if cmd == "start" {
 			start()
 		} else if cmd == "stop" {
 			stop()
 		} else {
-			fmt.Println("Agent only support these commands : register | start | stop. Please try again!")
+			fmt.Println("Agent only support these commands : init | register | start | stop. Please try again!")
 		}
 	}
+}
+
+func initKeys() {
+	config.ConfigToFile()
 }
 
 func register() {
