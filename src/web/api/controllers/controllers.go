@@ -48,6 +48,9 @@ func (m *MainController) Public() {
 	json.Unmarshal(m.Ctx.Input.RequestBody, &result)
 	logs.Info("Api receive public", result)
 	plain, ok := box.Open(result["cipher"], result["temp"], agentPri)
+	if !ok {
+		m.Abort("500")
+	}
 	logs.Info("public open box", plain, ok)
 	redis.Store(result["oid"], "public", plain)
 	//TODO submit
@@ -58,6 +61,9 @@ func (m *MainController) Private() {
 	json.Unmarshal(m.Ctx.Input.RequestBody, &result)
 	logs.Info("Api receive private", result)
 	plain, ok := box.Open(result["cipher"], result["temp"], agentPri)
+	if !ok {
+		m.Abort("500")
+	}
 	logs.Info("private open box", plain, ok)
 	redis.Store(result["oid"], "private", plain)
 	//TODO submit
@@ -68,12 +74,15 @@ func (m *MainController) Secret() {
 	json.Unmarshal(m.Ctx.Input.RequestBody, &result)
 	logs.Info("Api receive secret", result)
 	plain, ok := box.Open(result["cipher"], result["temp"], agentPri)
+	if !ok {
+		m.Abort("500")
+	}
 	logs.Info("secret open box", plain, ok)
 	redis.Store(result["oid"], "secret", plain)
 	//TODO submit
 }
 
-func sendData(oid, public, secret, address, data string) {
+func sendData(oid, public, secret, address, data string) error{
 	tempPub, tempPri, _ := box.GenerateKeyPair()
 	url := address
 
@@ -87,16 +96,20 @@ func sendData(oid, public, secret, address, data string) {
 	fmt.Println("json:", result)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	if err != nil {
-		panic(err)
+		return err
 	}
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
 	defer resp.Body.Close()
 	fmt.Println("response Status:", resp.Status)
 	fmt.Println("response Headers:", resp.Header)
 	body, _ := ioutil.ReadAll(resp.Body)
 	fmt.Println("response Body:", string(body))
+	return nil
 	//TODO submit
 }
 
@@ -112,14 +125,23 @@ func (m *MainController) Address() {
 
 	//send data
 	res, err := redis.Get(result["oid"], "public")
+	if err != nil {
+		m.Abort("500")
+	}
 	public := string(res.([]byte))
 	logs.Info("redis get public", public, err)
 
 	res, err = redis.Get(result["oid"], "secret")
+	if err != nil {
+		m.Abort("500")
+	}
 	secret := string(res.([]byte))
 	logs.Info("redis get secret", secret, err)
 	data := "A staff member in costume waits for visitors at a booth for Chinese Twitter-like Sina Weibo at the Global Mobile Internet Conference in Beijing, April 27, 2017."
-	go sendData(result["oid"], public, secret, plain, data)
+	err =sendData(result["oid"], public, secret, plain, data)
+	if err != nil {
+		m.Abort("500")
+	}
 	//TODO submit
 }
 
@@ -130,6 +152,9 @@ func (m *MainController) Data() {
 	time.Sleep(time.Second * 2)
 
 	res, err := redis.Get(result["oid"], "private")
+	if err != nil {
+		m.Abort("500")
+	}
 	private := string(res.([]byte))
 	logs.Info("redis get private", private, err)
 	secret, ok := box.Open(result["secret"], result["temp"], private)
@@ -147,10 +172,16 @@ func (m *MainController) DecryptData() {
 	time.Sleep(time.Second * 3)
 
 	res, err := redis.Get(result["oid"], "secret")
+	if err != nil {
+		m.Abort("500")
+	}
 	secret := string(res.([]byte))
 	logs.Info("redis get secret", secret, err)
 
 	res, err = redis.Get(result["oid"], "edata")
+	if err != nil {
+		m.Abort("500")
+	}
 	edata := string(res.([]byte))
 	logs.Info("redis get edata", edata, err)
 
@@ -167,6 +198,9 @@ func (m *MainController) DestroyData() {
 	time.Sleep(time.Second * 4)
 
 	res, err := redis.Delete(result["oid"])
+	if err != nil {
+		m.Abort("500")
+	}
 	logs.Info("redis delete key", res, err)
 	//TODO submit
 }

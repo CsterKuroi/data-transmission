@@ -7,7 +7,7 @@ import (
 	"uniswitch-agent/src/config"
 	//"uniswitch-agent/src/core/task"
 	_ "uniswitch-agent/src/web/api/routers"
-	"uniswitch-agent/src/web/req"
+	//"uniswitch-agent/src/web/req"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -63,14 +63,14 @@ func register() {
 	} else if pwdF != pwdS {
 		fmt.Println("Passwords do not match!")
 	} else {
-		url := uniSwitchHost + registerUrl
-		//TODO get agent param
-		registerParam := ""
-		res, err := req.RegisterAgentToSwitch(url, registerParam)
-		//TODO deal with result
-		logs.Info("res:", res)
-		logs.Info("err:", err)
-		fmt.Println("Register success! Please wait for the activation.")
+		//url := uniSwitchHost + registerUrl
+		////TODO get agent param
+		//registerParam := ""
+		//res, err := req.RegisterAgentToSwitch(url, registerParam)
+		////TODO deal with result
+		//logs.Info("res:", res)
+		//logs.Info("err:", err)
+		//fmt.Println("Register success! Please wait for the activation.")
 	}
 }
 

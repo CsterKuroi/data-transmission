@@ -16,8 +16,8 @@ func ReqGet() {
 	fmt.Println(str)
 }
 
-func RegisterAgentToSwitch(url string, jsonData string) (str string, err error) {
-	req := httplib.Post(url)
+func AddAgent(url string, jsonData string) (str string, err error) {
+	req := httplib.Post(url + "/uniswitchAgent/addAgent")
 	//req.Header("Content-Encoding", "utf-8")
 	req.Header("Content-Type", "application/json; charset=utf-8")
 	req.Body(jsonData)
@@ -28,8 +28,44 @@ func RegisterAgentToSwitch(url string, jsonData string) (str string, err error) 
 	return str, err
 }
 
-func CheckAgentPwdInSwitch(url string, jsonData string) (str string, err error) {
-	req := httplib.Post(url)
+func RegisterAgent(url string, jsonData string) (str string, err error) {
+	req := httplib.Post(url + "/uniswitchAgent/registerAgent")
+	//req.Header("Content-Encoding", "utf-8")
+	req.Header("Content-Type", "application/json; charset=utf-8")
+	req.Body(jsonData)
+	str, err = req.String()
+	if err != nil {
+		logs.Info(str)
+	}
+	return str, err
+}
+
+func AgentLogin(url string, jsonData string) (str string, err error) {
+	req := httplib.Post(url + "/uniswitchAgent/agentLogin")
+	//req.Header("Content-Encoding", "utf-8")
+	req.Header("Content-Type", "application/json; charset=utf-8")
+	req.Body(jsonData)
+	str, err = req.String()
+	if err != nil {
+		logs.Info(str)
+	}
+	return str, err
+}
+
+func AgentLogout(url string, jsonData string) (str string, err error) {
+	req := httplib.Post(url + "/uniswitchAgent/agentLogout")
+	//req.Header("Content-Encoding", "utf-8")
+	req.Header("Content-Type", "application/json; charset=utf-8")
+	req.Body(jsonData)
+	str, err = req.String()
+	if err != nil {
+		logs.Info(str)
+	}
+	return str, err
+}
+
+func UploadAgentStatus(url string, jsonData string) (str string, err error) {
+	req := httplib.Post(url + "/uniswitchAgent/uploadAgentStatus")
 	//req.Header("Content-Encoding", "utf-8")
 	req.Header("Content-Type", "application/json; charset=utf-8")
 	req.Body(jsonData)
