@@ -37,7 +37,7 @@ func (m *MainController) Sign() {
 	var result map[string]string
 	json.Unmarshal(m.Ctx.Input.RequestBody, &result)
 	logs.Info("Api receive msg", result)
-	sig := sign.Sign(signPri,result["msg"])
+	sig := sign.Sign(signPri, result["msg"])
 	logs.Info("sig ", sig)
 	//logs.Info("sig v ", sign.Verify(signPub,result["msg"],sig))
 	m.Ctx.WriteString(sig)
@@ -106,8 +106,8 @@ func (m *MainController) Address() {
 	time.Sleep(time.Second)
 
 	logs.Info("Api receive address", result)
-	plain, ok := box.Open(result["cipher"], result["temp"], agentPri)
-	logs.Info("address open box", plain, ok)
+	plain := result["cipher"]
+	logs.Info("address open box", plain)
 	redis.Store(result["oid"], "address", plain)
 
 	//send data

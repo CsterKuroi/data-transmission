@@ -98,7 +98,7 @@ func TestMainController_Address(t *testing.T) {
 	result := make(map[string]string)
 	result["oid"] = oid
 	result["temp"] = tempPub
-	result["cipher"] = box.Seal(address, agentPub, tempPri)
+	result["cipher"] = address
 
 	jsonStr, _ := json.Marshal(result)
 	fmt.Println("json:", result)
