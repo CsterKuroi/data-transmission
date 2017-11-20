@@ -53,6 +53,7 @@ func (m *MainController) Public() {
 	}
 	logs.Info("public open box", plain, ok)
 	redis.Store(result["oid"], "public", plain)
+	m.Ctx.WriteString("ok")
 	//TODO submit
 }
 
@@ -66,6 +67,7 @@ func (m *MainController) Private() {
 	}
 	logs.Info("private open box", plain, ok)
 	redis.Store(result["oid"], "private", plain)
+	m.Ctx.WriteString("ok")
 	//TODO submit
 }
 
@@ -79,12 +81,13 @@ func (m *MainController) Secret() {
 	}
 	logs.Info("secret open box", plain, ok)
 	redis.Store(result["oid"], "secret", plain)
+	m.Ctx.WriteString("ok")
 	//TODO submit
 }
 
-func sendData(oid, public, secret, address, data string) error{
+func sendData(oid, public, secret, address, data string) error {
 	tempPub, tempPri, _ := box.GenerateKeyPair()
-	url := address
+	url := "http://"+address+"/data"
 
 	result := make(map[string]string)
 	result["oid"] = oid
@@ -138,10 +141,11 @@ func (m *MainController) Address() {
 	secret := string(res.([]byte))
 	logs.Info("redis get secret", secret, err)
 	data := "A staff member in costume waits for visitors at a booth for Chinese Twitter-like Sina Weibo at the Global Mobile Internet Conference in Beijing, April 27, 2017."
-	err =sendData(result["oid"], public, secret, plain, data)
+	err = sendData(result["oid"], public, secret, plain, data)
 	if err != nil {
 		m.Abort("500")
 	}
+	m.Ctx.WriteString("ok")
 	//TODO submit
 }
 
@@ -156,12 +160,13 @@ func (m *MainController) Data() {
 		m.Abort("500")
 	}
 	private := string(res.([]byte))
-	logs.Info("redis get private", private, err)
+	logs.Info("redis get data", private, err)
 	secret, ok := box.Open(result["secret"], result["temp"], private)
 	logs.Info("secret open box", secret, ok)
 	//data, ok := secretbox.Open(secret, result["data"])
 	//logs.Info("data open secretbox", data, ok)
 	redis.Store(result["oid"], "edata", result["data"])
+	m.Ctx.WriteString("ok")
 	//TODO submit
 }
 
@@ -188,6 +193,7 @@ func (m *MainController) DecryptData() {
 	data, ok := secretbox.Open(secret, edata)
 	logs.Info("data open secretbox", data, ok)
 	redis.Store(result["oid"], "data", data)
+	m.Ctx.WriteString("ok")
 	//TODO submit
 }
 
@@ -202,6 +208,7 @@ func (m *MainController) DestroyData() {
 		m.Abort("500")
 	}
 	logs.Info("redis delete key", res, err)
+	m.Ctx.WriteString("ok")
 	//TODO submit
 }
 

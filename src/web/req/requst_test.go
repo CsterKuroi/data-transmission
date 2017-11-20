@@ -20,8 +20,8 @@ func TestAddAgent(t *testing.T) {
 
 func TestRegisterAgent(t *testing.T) {
 	result := make(map[string]string)
-	result["id"] = "23"
-	result["name"] = "lee"
+	result["id"] = "25"
+	result["name"] = "leehh"
 	result["password"] = "123456"
 	result["signPubkey"] = "aaa"
 	result["encryptPubkey"] = "bbb"
@@ -33,7 +33,7 @@ func TestRegisterAgent(t *testing.T) {
 
 func TestAgentLogin(t *testing.T) {
 	result := make(map[string]string)
-	result["name"] = "lee"
+	result["name"] = "leehh"
 	result["password"] = "123456"
 
 	res, err := AgentLogin(url, common.Serialize(result))
@@ -42,7 +42,7 @@ func TestAgentLogin(t *testing.T) {
 
 func TestAgentLogout(t *testing.T) {
 	result := make(map[string]string)
-	result["token"] = "7F612ad48c9c534266f010E57C926cbB59022B6a84f2d383"
+	result["token"] = "8778C1e258B6a6d91851da3e2C3b5092e050dDffEf70f897"
 
 	res, err := AgentLogout(url, common.Serialize(result))
 	fmt.Println(res, "\n", err)

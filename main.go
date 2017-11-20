@@ -1,10 +1,16 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
+	"time"
 
+	"uniswitch-agent/src/common"
 	"uniswitch-agent/src/config"
+	"uniswitch-agent/src/db/redis"
+	"uniswitch-agent/src/web/req"
+
 	//"uniswitch-agent/src/core/task"
 	_ "uniswitch-agent/src/web/api/routers"
 	//"uniswitch-agent/src/web/req"
@@ -51,9 +57,23 @@ func initKeys() {
 }
 
 func register() {
-	logs.Info("Register Agent")
-
-	var pwdF, pwdS string
+	logs.Info("Add Agent")
+	res, err := req.AddAgent(uniSwitchHost, "")
+	var registerResult map[string]interface{}
+	err = json.Unmarshal([]byte(res), &registerResult)
+	if err != nil {
+		panic(err)
+	}
+	if registerResult["code"].(float64) != 0 {
+		panic("添加Agent失败 ")
+	}
+	redis.Store(config.Config.Encrypt.PublicKey, "agentId", registerResult["result"].(string))
+	if err != nil {
+		panic(err)
+	}
+	var name, pwdF, pwdS string
+	fmt.Print("Please input your name : ")
+	fmt.Scanln(&name)
 	fmt.Print("Please input your password : ")
 	fmt.Scanln(&pwdF)
 	fmt.Print("Please input your password again : ")
@@ -63,39 +83,103 @@ func register() {
 	} else if pwdF != pwdS {
 		fmt.Println("Passwords do not match!")
 	} else {
-		//url := uniSwitchHost + registerUrl
-		////TODO get agent param
-		//registerParam := ""
-		//res, err := req.RegisterAgentToSwitch(url, registerParam)
-		////TODO deal with result
-		//logs.Info("res:", res)
-		//logs.Info("err:", err)
-		//fmt.Println("Register success! Please wait for the activation.")
+		result := make(map[string]string)
+		result["id"] = registerResult["result"].(string)
+		result["name"] = name
+		result["password"] = pwdF
+		result["signPubkey"] = config.Config.Sign.PublicKey
+		result["encryptPubkey"] = config.Config.Encrypt.PublicKey
+		result["address"] = beego.AppConfig.String("agent.host")
+		logs.Info("register Agent")
+		res, err := req.RegisterAgent(uniSwitchHost, common.Serialize(result))
+		logs.Debug(res, err)
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
+func login() {
+	var name, pwdF string
+	fmt.Print("Please input your name : ")
+	fmt.Scanln(&name)
+	fmt.Print("Please input your password : ")
+	fmt.Scanln(&pwdF)
+	result := make(map[string]string)
+	result["name"] = name
+	result["password"] = pwdF
+	logs.Info("login Agent")
+	res, err := req.AgentLogin(uniSwitchHost, common.Serialize(result))
+	logs.Info(res, err)
+	if err != nil {
+		panic(err)
+	}
+	var loginResult map[string]interface{}
+	err = json.Unmarshal([]byte(res), &loginResult)
+	if err != nil {
+		panic(err)
+	}
+	if loginResult["code"].(float64) != 0 {
+		panic("用户名或密码有误 ")
+	}
+	redis.Store(config.Config.Encrypt.PublicKey, "token", loginResult["result"].(string))
+	if err != nil {
+		panic(err)
+	}
+}
+
+func logout() {
+	result := make(map[string]string)
+	res, err := redis.Get("token", config.Config.Encrypt.PublicKey)
+	logs.Debug(res, err)
+	if err != nil {
+		panic(err)
+	}
+	result["token"] = res.(string)
+	logs.Info("logout Agent")
+	res, err = req.AgentLogout(uniSwitchHost, common.Serialize(result))
+	logs.Debug(res, err)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func heartbeat() {
+	//TODO per hour
+	result := make(map[string]string)
+	res, err := redis.Get(config.Config.Encrypt.PublicKey, "token")
+	token := string(res.([]byte))
+	logs.Debug(res, err)
+	if err != nil {
+		panic(err)
+	}
+	result["token"] = token
+	res, err = redis.Get(config.Config.Encrypt.PublicKey, "agentId")
+	agentId := string(res.([]byte))
+	logs.Debug(res, err)
+	if err != nil {
+		panic(err)
+	}
+	result["id"] = agentId
+	logs.Info("heartbeat Agent")
+	res, err = req.UploadAgentStatus(uniSwitchHost, common.Serialize(result))
+	logs.Debug(res, err)
+	if err != nil {
+		panic(err)
 	}
 }
 
 func start() {
 	logInit()
-	//var pwdF string
-	//fmt.Print("Please input your password : ")
-	//fmt.Scanln(&pwdF)
-	////TODO check pwd
-	//hashPwd := pwdF
-	//url := uniSwitchHost + checkPwdUrl
-	//_, err := req.CheckAgentPwdInSwitch(url, hashPwd)
-	//if err != nil {
-	//	fmt.Println("Check password failed. Please try again!")
-	//} else {
-	//	//TODO update login status by res
-	//
-	//}
-	//go task.DequeueTask()
+	login()
+	time.Sleep(time.Second)
+	heartbeat()
 	logs.Info("beego start run")
 	beego.Run()
 }
 
 func stop() {
-
+	logout()
 }
 
 func logInit() {

@@ -17,7 +17,7 @@ func ReqGet() {
 }
 
 func AddAgent(url string, jsonData string) (str string, err error) {
-	req := httplib.Post(url + "/uniswitchAgent/addAgent")
+	req := httplib.Post("http://"+url + "/uniswitchAgent/addAgent")
 	//req.Header("Content-Encoding", "utf-8")
 	req.Header("Content-Type", "application/json; charset=utf-8")
 	req.Body(jsonData)
@@ -29,7 +29,7 @@ func AddAgent(url string, jsonData string) (str string, err error) {
 }
 
 func RegisterAgent(url string, jsonData string) (str string, err error) {
-	req := httplib.Post(url + "/uniswitchAgent/registerAgent")
+	req := httplib.Post("http://"+url + "/uniswitchAgent/registerAgent")
 	//req.Header("Content-Encoding", "utf-8")
 	req.Header("Content-Type", "application/json; charset=utf-8")
 	req.Body(jsonData)
@@ -41,7 +41,7 @@ func RegisterAgent(url string, jsonData string) (str string, err error) {
 }
 
 func AgentLogin(url string, jsonData string) (str string, err error) {
-	req := httplib.Post(url + "/uniswitchAgent/agentLogin")
+	req := httplib.Post("http://"+url + "/uniswitchAgent/agentLogin")
 	//req.Header("Content-Encoding", "utf-8")
 	req.Header("Content-Type", "application/json; charset=utf-8")
 	req.Body(jsonData)
@@ -53,7 +53,7 @@ func AgentLogin(url string, jsonData string) (str string, err error) {
 }
 
 func AgentLogout(url string, jsonData string) (str string, err error) {
-	req := httplib.Post(url + "/uniswitchAgent/agentLogout")
+	req := httplib.Post("http://"+url + "/uniswitchAgent/agentLogout")
 	//req.Header("Content-Encoding", "utf-8")
 	req.Header("Content-Type", "application/json; charset=utf-8")
 	req.Body(jsonData)
@@ -65,7 +65,7 @@ func AgentLogout(url string, jsonData string) (str string, err error) {
 }
 
 func UploadAgentStatus(url string, jsonData string) (str string, err error) {
-	req := httplib.Post(url + "/uniswitchAgent/uploadAgentStatus")
+	req := httplib.Post("http://"+url + "/uniswitchAgent/uploadAgentStatus")
 	//req.Header("Content-Encoding", "utf-8")
 	req.Header("Content-Type", "application/json; charset=utf-8")
 	req.Body(jsonData)
