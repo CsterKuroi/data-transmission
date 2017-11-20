@@ -8,8 +8,8 @@ import (
 	"uniswitch-agent/src/common"
 	"uniswitch-agent/src/config"
 	"uniswitch-agent/src/db/redis"
-	"uniswitch-agent/src/web/req"
 	_ "uniswitch-agent/src/web/api/routers"
+	"uniswitch-agent/src/web/req"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -60,7 +60,7 @@ func register() {
 	if err != nil {
 		panic(err)
 	}
-	if registerResult["code"].(float64) != 0 {
+	if registerResult["code"].(float64) != 200 {
 		panic("添加Agent失败 ")
 	}
 	redis.Store(config.Config.Encrypt.PublicKey, "agentId", registerResult["result"].(string))
@@ -115,7 +115,7 @@ func login() {
 	if err != nil {
 		panic(err)
 	}
-	if loginResult["code"].(float64) != 0 {
+	if loginResult["code"].(float64) != 200 {
 		panic("用户名或密码有误 ")
 	}
 	redis.Store(config.Config.Encrypt.PublicKey, "token", loginResult["result"].(string))

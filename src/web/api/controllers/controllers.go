@@ -159,7 +159,7 @@ func (m *MainController) Data() {
 		m.Abort("500")
 	}
 	private := string(res.([]byte))
-	logs.Info("redis get data", private, err)
+	logs.Info("redis get private to decrypt secret", private, err)
 	secret, ok := box.Open(result["secret"], result["temp"], private)
 	logs.Info("secret open box", secret, ok)
 	//data, ok := secretbox.Open(secret, result["data"])
