@@ -18,6 +18,4 @@ func init() {
 	beego.Router("/data", &controllers.MainController{}, "post:Data")
 	beego.Router("/decrypt", &controllers.MainController{}, "post:DecryptData")
 	beego.Router("/destroy", &controllers.MainController{}, "post:DestroyData")
-
-	beego.Router("/sendDataToAnotherAgent", &controllers.MainController{}, "post:SendDataToAnotherAgent")
 }

@@ -4,16 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"time"
 
 	"uniswitch-agent/src/common"
 	"uniswitch-agent/src/config"
 	"uniswitch-agent/src/db/redis"
 	"uniswitch-agent/src/web/req"
-
-	//"uniswitch-agent/src/core/task"
 	_ "uniswitch-agent/src/web/api/routers"
-	//"uniswitch-agent/src/web/req"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -130,12 +126,13 @@ func login() {
 
 func logout() {
 	result := make(map[string]string)
-	res, err := redis.Get("token", config.Config.Encrypt.PublicKey)
+	res, err := redis.Get(config.Config.Encrypt.PublicKey, "token")
+	token := string(res.([]byte))
 	logs.Debug(res, err)
 	if err != nil {
 		panic(err)
 	}
-	result["token"] = res.(string)
+	result["token"] = token
 	logs.Info("logout Agent")
 	res, err = req.AgentLogout(uniSwitchHost, common.Serialize(result))
 	logs.Debug(res, err)
@@ -171,9 +168,13 @@ func heartbeat() {
 
 func start() {
 	logInit()
+
+	logs.Info("login with switch")
 	login()
-	time.Sleep(time.Second)
+
+	logs.Info("heartbeat with switch")
 	heartbeat()
+
 	logs.Info("beego start run")
 	beego.Run()
 }

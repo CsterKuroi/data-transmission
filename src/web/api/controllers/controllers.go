@@ -12,7 +12,6 @@ import (
 	"uniswitch-agent/src/common/secretbox"
 	"uniswitch-agent/src/common/sign"
 	"uniswitch-agent/src/config"
-	"uniswitch-agent/src/core/task"
 	"uniswitch-agent/src/db/redis"
 
 	"github.com/astaxie/beego"
@@ -210,10 +209,4 @@ func (m *MainController) DestroyData() {
 	logs.Info("redis delete key", res, err)
 	m.Ctx.WriteString("ok")
 	//TODO submit
-}
-
-func (m *MainController) SendDataToAnotherAgent() {
-	param := m.Ctx.Input.RequestBody
-	logs.Info("Receive data send task :", param)
-	task.EnqueueTask(param)
 }
