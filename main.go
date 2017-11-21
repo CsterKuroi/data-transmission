@@ -17,19 +17,16 @@ import (
 
 var (
 	uniSwitchHost = beego.AppConfig.String("uniswitch.host")
-	registerUrl   = beego.AppConfig.String("registerUrl")
-	checkPwdUrl   = beego.AppConfig.String("checkPwdUrl")
 )
 
 func main() {
 	os.Args = append(os.Args, "start")
 	if len(os.Args) == 1 {
-		fmt.Println("cmd:\n" +
+		fmt.Printf("cmd:\n" +
 			"  init     : init sign and encrypt\n" +
 			"  register : register to uniswitch\n" +
 			"  start    : start uniswitch-agent\n" +
-			"  stop     : stop uniswitch-agent \n" +
-			"\n")
+			"  stop     : stop uniswitch-agent \n")
 	} else {
 		cmd := os.Args[1]
 		if cmd == "init" {
@@ -63,7 +60,7 @@ func register() {
 	if registerResult["code"].(float64) != 200 {
 		panic("添加Agent失败 ")
 	}
-	redis.Store(config.Config.Encrypt.PublicKey, "agentId", registerResult["result"].(string))
+	_, err = redis.Store(config.Config.Encrypt.PublicKey, "agentId", registerResult["result"].(string))
 	if err != nil {
 		panic(err)
 	}

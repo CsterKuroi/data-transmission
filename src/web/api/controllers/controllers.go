@@ -51,7 +51,11 @@ func (m *MainController) Public() {
 		m.Abort("500")
 	}
 	logs.Info("public open box", plain, ok)
-	redis.Store(result["oid"], "public", plain)
+	_, err := redis.Store(result["oid"], "public", plain)
+	if err != nil {
+		logs.Debug(err)
+		m.Abort("500")
+	}
 	m.Ctx.WriteString("ok")
 	//TODO submit
 }
@@ -65,7 +69,11 @@ func (m *MainController) Private() {
 		m.Abort("500")
 	}
 	logs.Info("private open box", plain, ok)
-	redis.Store(result["oid"], "private", plain)
+	_, err := redis.Store(result["oid"], "private", plain)
+	if err != nil {
+		logs.Debug(err)
+		m.Abort("500")
+	}
 	m.Ctx.WriteString("ok")
 	//TODO submit
 }
@@ -79,14 +87,18 @@ func (m *MainController) Secret() {
 		m.Abort("500")
 	}
 	logs.Info("secret open box", plain, ok)
-	redis.Store(result["oid"], "secret", plain)
+	_, err := redis.Store(result["oid"], "secret", plain)
+	if err != nil {
+		logs.Debug(err)
+		m.Abort("500")
+	}
 	m.Ctx.WriteString("ok")
 	//TODO submit
 }
 
 func sendData(oid, public, secret, address, data string) error {
 	tempPub, tempPri, _ := box.GenerateKeyPair()
-	url := "http://"+address+"/data"
+	url := "http://" + address + "/data"
 
 	result := make(map[string]string)
 	result["oid"] = oid
@@ -123,11 +135,15 @@ func (m *MainController) Address() {
 	logs.Info("Api receive address", result)
 	plain := result["cipher"]
 	logs.Info("address open box", plain)
-	redis.Store(result["oid"], "address", plain)
-
+	_, err := redis.Store(result["oid"], "address", plain)
+	if err != nil {
+		logs.Debug(err)
+		m.Abort("500")
+	}
 	//send data
 	res, err := redis.Get(result["oid"], "public")
 	if err != nil {
+		logs.Debug(err)
 		m.Abort("500")
 	}
 	public := string(res.([]byte))
@@ -135,6 +151,7 @@ func (m *MainController) Address() {
 
 	res, err = redis.Get(result["oid"], "secret")
 	if err != nil {
+		logs.Debug(err)
 		m.Abort("500")
 	}
 	secret := string(res.([]byte))
@@ -142,6 +159,7 @@ func (m *MainController) Address() {
 	data := "A staff member in costume waits for visitors at a booth for Chinese Twitter-like Sina Weibo at the Global Mobile Internet Conference in Beijing, April 27, 2017."
 	err = sendData(result["oid"], public, secret, plain, data)
 	if err != nil {
+		logs.Debug(err)
 		m.Abort("500")
 	}
 	m.Ctx.WriteString("ok")
@@ -156,6 +174,7 @@ func (m *MainController) Data() {
 
 	res, err := redis.Get(result["oid"], "private")
 	if err != nil {
+		logs.Debug(err)
 		m.Abort("500")
 	}
 	private := string(res.([]byte))
@@ -164,7 +183,11 @@ func (m *MainController) Data() {
 	logs.Info("secret open box", secret, ok)
 	//data, ok := secretbox.Open(secret, result["data"])
 	//logs.Info("data open secretbox", data, ok)
-	redis.Store(result["oid"], "edata", result["data"])
+	_, err = redis.Store(result["oid"], "edata", result["data"])
+	if err != nil {
+		logs.Debug(err)
+		m.Abort("500")
+	}
 	m.Ctx.WriteString("ok")
 	//TODO submit
 }
@@ -177,6 +200,7 @@ func (m *MainController) DecryptData() {
 
 	res, err := redis.Get(result["oid"], "secret")
 	if err != nil {
+		logs.Debug(err)
 		m.Abort("500")
 	}
 	secret := string(res.([]byte))
@@ -184,6 +208,7 @@ func (m *MainController) DecryptData() {
 
 	res, err = redis.Get(result["oid"], "edata")
 	if err != nil {
+		logs.Debug(err)
 		m.Abort("500")
 	}
 	edata := string(res.([]byte))
@@ -191,7 +216,11 @@ func (m *MainController) DecryptData() {
 
 	data, ok := secretbox.Open(secret, edata)
 	logs.Info("data open secretbox", data, ok)
-	redis.Store(result["oid"], "data", data)
+	_, err = redis.Store(result["oid"], "data", data)
+	if err != nil {
+		logs.Debug(err)
+		m.Abort("500")
+	}
 	m.Ctx.WriteString("ok")
 	//TODO submit
 }
@@ -204,6 +233,7 @@ func (m *MainController) DestroyData() {
 
 	res, err := redis.Delete(result["oid"])
 	if err != nil {
+		logs.Debug(err)
 		m.Abort("500")
 	}
 	logs.Info("redis delete key", res, err)
