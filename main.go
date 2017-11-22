@@ -20,11 +20,12 @@ var (
 )
 
 func main() {
-	os.Args = append(os.Args, "start")
+	os.Args = append(os.Args, "serve")
 	if len(os.Args) == 1 {
 		fmt.Printf("cmd:\n" +
 			"  init     : init sign and encrypt\n" +
 			"  register : register to uniswitch\n" +
+			"  serve    : serve uniswitch-agent\n" +
 			"  start    : start uniswitch-agent\n" +
 			"  stop     : stop uniswitch-agent \n")
 	} else {
@@ -37,10 +38,13 @@ func main() {
 		} else if cmd == "start" {
 			config.FileToConfig()
 			start()
+		} else if cmd == "serve" {
+			config.FileToConfig()
+			serve()
 		} else if cmd == "stop" {
 			stop()
 		} else {
-			fmt.Println("Agent only support these commands : init | register | start | stop. Please try again!")
+			fmt.Println("Agent only support these commands : init | register | serve | start | stop. Please try again!")
 		}
 	}
 }
@@ -161,6 +165,13 @@ func heartbeat() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func serve() {
+	logInit()
+
+	logs.Info("beego start run")
+	beego.Run()
 }
 
 func start() {
