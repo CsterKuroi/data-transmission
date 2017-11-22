@@ -12,6 +12,7 @@ import (
 	"uniswitch-agent/src/common/box"
 	"uniswitch-agent/src/common/sign"
 
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 )
 
@@ -32,7 +33,7 @@ func init() {
 	if err != nil {
 		logs.Error(err.Error())
 	}
-	fileName := _user.HomeDir + "/.agent"
+	fileName := _user.HomeDir + "/.agent" + beego.AppConfig.String("httpport")
 	_, err = os.Open(fileName)
 	if err != nil {
 		logs.Info(err.Error())
@@ -46,7 +47,7 @@ func FileToConfig() {
 	if err != nil {
 		logs.Error(err.Error())
 	}
-	fileName := _user.HomeDir + "/.agent"
+	fileName := _user.HomeDir + "/.agent" + beego.AppConfig.String("httpport")
 	file, err := os.Open(fileName)
 	if err != nil {
 		logs.Error(err.Error())
@@ -86,7 +87,7 @@ func ConfigToFile() {
 	if err != nil {
 		logs.Error(err.Error())
 	}
-	fileName := _user.HomeDir + "/.agent"
+	fileName := _user.HomeDir + "/.agent" + beego.AppConfig.String("httpport")
 	_, err = os.Stat(fileName)
 	if err == nil { //文件存在
 		fmt.Println("Config file already exist, do you want to override it?")
