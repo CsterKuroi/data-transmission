@@ -146,7 +146,12 @@ func (m *MainController) Address() {
 		logs.Debug(err)
 		m.Abort("500")
 	}
-	public := string(res.([]byte))
+	value, ok := res.([]byte)
+	if !ok {
+		logs.Debug("interface {} is nil, not []uint8")
+		m.Abort("500")
+	}
+	public := string(value)
 	logs.Info("redis get public", public, err)
 
 	res, err = redis.Get(result["oid"], "secret")
@@ -154,7 +159,12 @@ func (m *MainController) Address() {
 		logs.Debug(err)
 		m.Abort("500")
 	}
-	secret := string(res.([]byte))
+	value, ok = res.([]byte)
+	if !ok {
+		logs.Debug("interface {} is nil, not []uint8")
+		m.Abort("500")
+	}
+	secret := string(value)
 	logs.Info("redis get secret", secret, err)
 	data := "A staff member in costume waits for visitors at a booth for Chinese Twitter-like Sina Weibo at the Global Mobile Internet Conference in Beijing, April 27, 2017."
 	err = sendData(result["oid"], public, secret, plain, data)
@@ -177,7 +187,12 @@ func (m *MainController) Data() {
 		logs.Debug(err)
 		m.Abort("500")
 	}
-	private := string(res.([]byte))
+	value, ok := res.([]byte)
+	if !ok {
+		logs.Debug("interface {} is nil, not []uint8")
+		m.Abort("500")
+	}
+	private := string(value)
 	logs.Info("redis get private to decrypt secret", private, err)
 	secret, ok := box.Open(result["secret"], result["temp"], private)
 	logs.Info("secret open box", secret, ok)
@@ -203,7 +218,12 @@ func (m *MainController) DecryptData() {
 		logs.Debug(err)
 		m.Abort("500")
 	}
-	secret := string(res.([]byte))
+	value, ok := res.([]byte)
+	if !ok {
+		logs.Debug("interface {} is nil, not []uint8")
+		m.Abort("500")
+	}
+	secret := string(value)
 	logs.Info("redis get secret", secret, err)
 
 	res, err = redis.Get(result["oid"], "edata")
@@ -211,7 +231,12 @@ func (m *MainController) DecryptData() {
 		logs.Debug(err)
 		m.Abort("500")
 	}
-	edata := string(res.([]byte))
+	value, ok = res.([]byte)
+	if !ok {
+		logs.Debug("interface {} is nil, not []uint8")
+		m.Abort("500")
+	}
+	edata := string(value)
 	logs.Info("redis get edata", edata, err)
 
 	data, ok := secretbox.Open(secret, edata)

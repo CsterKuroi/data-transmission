@@ -51,7 +51,7 @@ func FileToConfig() {
 	file, err := os.Open(fileName)
 	if err != nil {
 		logs.Error(err.Error())
-		logs.Error("please create default config by 'agent configure' or 'go run main.go agent'")
+		logs.Error("please create default config by 'uniswitch-agent init' or 'go run main.go init'")
 		os.Exit(1)
 	}
 	_byte, err := ioutil.ReadAll(file)

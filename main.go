@@ -128,7 +128,11 @@ func login() {
 func logout() {
 	result := make(map[string]string)
 	res, err := redis.Get(config.Config.Encrypt.PublicKey, "token")
-	token := string(res.([]byte))
+	value, ok := res.([]byte)
+	if !ok {
+		panic("interface {} is nil, not []uint8")
+	}
+	token := string(value)
 	logs.Debug(res, err)
 	if err != nil {
 		panic(err)
@@ -146,14 +150,22 @@ func heartbeat() {
 	//TODO per hour
 	result := make(map[string]string)
 	res, err := redis.Get(config.Config.Encrypt.PublicKey, "token")
-	token := string(res.([]byte))
+	value, ok := res.([]byte)
+	if !ok {
+		panic("interface {} is nil, not []uint8")
+	}
+	token := string(value)
 	logs.Debug(res, err)
 	if err != nil {
 		panic(err)
 	}
 	result["token"] = token
 	res, err = redis.Get(config.Config.Encrypt.PublicKey, "agentId")
-	agentId := string(res.([]byte))
+	value, ok = res.([]byte)
+	if !ok {
+		panic("interface {} is nil, not []uint8")
+	}
+	agentId := string(value)
 	logs.Debug(res, err)
 	if err != nil {
 		panic(err)
